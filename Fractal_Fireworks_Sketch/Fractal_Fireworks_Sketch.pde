@@ -30,7 +30,8 @@ void mouseClicked()
 {
   // Create a Firework and add it to the current index in our array.
   // The Firework should be placed where the user clicked.
-  theFireworks[currentFirework] = new Firework(mouseX, mouseY, 4);
+  //  initialize firework with recursion level 3 upon click
+  theFireworks[currentFirework] = new Firework(mouseX, mouseY, 3);
 
   // Increase the current index to get ready for the next Firework.
   currentFirework++;
@@ -49,19 +50,16 @@ void mouseClicked()
 }
 
 class Firework{
-  //position of Firework
+  //initialize Firework variables
   private float x;
   private float y;
-  
   private int numParticles;
   private int duration;
   private color theColor;
   private float splitAngle;
   private float explosionTimer;
   private float particleSize;
-  
   private boolean hidden;
-  
   private int numRecur;
   
 
@@ -71,17 +69,21 @@ class Firework{
     // Store x and y
     this.x = x;
     this.y = y;
+    //reduce numRecur for recursive construction
     this.numRecur = numRecur - 1;
 
-    numParticles = ceil(random(10)) + 10;
+    //initialize numParticles
+    numParticles = ceil(random(8)) + 3;
     
-    //soft colors
-    theColor = color(random(3)*50 + 105,random(3)*50 + 105,random(3)*50 + 105);
-    duration = ceil(random(3))*10 + 40;
+    //initialize variables randomizing most
+    theColor = color(random(3) * 50 + 105, random(3) * 50 + 105, random(3) * 50 + 105);
+    duration = ceil(random(30)) + 40;
     hidden = false;
     splitAngle = 360/numParticles;
     explosionTimer = 0;
-    particleSize = random(4) + 2;
+    //particleSize = random(5) + 1;
+    //later fireworks are smaller
+    particleSize = numRecur * 2 + 1;
 
   }
   
@@ -90,60 +92,59 @@ class Firework{
         //do nothing
       }
       else{
-        explosionCounter();
-        // This method specifies our Firework will not have an outline.
-        noStroke();
-
-        // Specifies the color for the Firework.
+         // Specifies the color for the Firework.
         stroke(theColor);
         strokeWeight(particleSize);
         
-        //explode();
-
+        //run the explosion counter to keep track of time and know when to explode or recurse
+        explosionCounter();
       }
   }
 
 
   void explosionCounter(){
+    //check if firework is done exploding
     if (explosionTimer < duration){
       explosionTimer += 0.25;
-      if (explosionTimer == 25){
-      //effectively recurse here
+      //after a short period of time, recursively explode
+      //later fireworks explode faster
+      if (explosionTimer == 20 * numRecur){
+      //recurse and hide old firework
         recursiveExplode();
+        hidden = true;
       }
       else{
+        //continue exploding normally
         explode();
       }
     }
     else{
-      //hide particles after exploding
+      //hide particles after exploding and not recuring
       hidden = true;
-      //explosionTimer = 10000.5;
     }
   }
   
   void explode(){
+    //slowly move aprticles apart at the correct angle based on firework start location and the explosion timer
     for(int i = 0; i < numParticles + 1; i++){
       pushMatrix();
       translate(x,y);
-      point(sin(radians(i*splitAngle))*explosionTimer,cos(radians(i*splitAngle))*explosionTimer);
+      point(sin(radians(i * splitAngle)) * explosionTimer, cos(radians(i * splitAngle)) * explosionTimer);
       popMatrix();
     }
   }
   
   void recursiveExplode(){
     for(int i = 0; i < numParticles + 1; i++){
-      //pushMatrix();
-      //translate(x,y);
-      //print(sin(radians(i*splitAngle))*explosionTimer);
-      createFirework(sin(radians(i*splitAngle))*explosionTimer + x,cos(radians(i*splitAngle))*explosionTimer + y, numRecur);
-      //popMatrix();
+      //create a new firework at the place of each old particle with one layer less of recursion left
+      createFirework(sin(radians(i * splitAngle)) * explosionTimer + x ,cos(radians(i * splitAngle)) * explosionTimer + y, numRecur);
     }
   }
 }
 
+// calls the firework constructor only if the bottom level of recursion has not yet been reached.
 void createFirework(float x, float y, int numRecur){
-  if (numRecur > 1)
+  if (numRecur > 0)
   {
     // Create a Firework and add it to the current index in our array.
     // The Firework should be placed where the user clicked.
