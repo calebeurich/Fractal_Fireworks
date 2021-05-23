@@ -30,7 +30,7 @@ void mouseClicked()
 {
   // Create a Firework and add it to the current index in our array.
   // The Firework should be placed where the user clicked.
-  theFireworks[currentFirework] = new Firework(mouseX, mouseY, 3);
+  theFireworks[currentFirework] = new Firework(mouseX, mouseY, 4);
 
   // Increase the current index to get ready for the next Firework.
   currentFirework++;
@@ -73,8 +73,7 @@ class Firework{
     this.y = y;
     this.numRecur = numRecur - 1;
 
-    //numParticles = ceil(random(10)) + 10;
-    numParticles = 6;
+    numParticles = ceil(random(10)) + 10;
     
     //soft colors
     theColor = color(random(3)*50 + 105,random(3)*50 + 105,random(3)*50 + 105);
@@ -136,18 +135,19 @@ class Firework{
     for(int i = 0; i < numParticles + 1; i++){
       //pushMatrix();
       //translate(x,y);
-      createFirework(sin(radians(i*splitAngle))*explosionTimer,cos(radians(i*splitAngle))*explosionTimer, numRecur);
+      //print(sin(radians(i*splitAngle))*explosionTimer);
+      createFirework(sin(radians(i*splitAngle))*explosionTimer + x,cos(radians(i*splitAngle))*explosionTimer + y, numRecur);
       //popMatrix();
     }
   }
 }
 
 void createFirework(float x, float y, int numRecur){
-  if (numRecur>1)
+  if (numRecur > 1)
   {
     // Create a Firework and add it to the current index in our array.
     // The Firework should be placed where the user clicked.
-    theFireworks[currentFirework] = new Firework(x, y, numRecur - 1);
+    theFireworks[currentFirework] = new Firework(x, y, numRecur);
   
     // Increase the current index to get ready for the next Firework.
     currentFirework++;
