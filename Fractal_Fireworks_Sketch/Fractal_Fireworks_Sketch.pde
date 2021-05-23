@@ -75,8 +75,14 @@ class Firework{
     //initialize numParticles
     numParticles = ceil(random(8)) + 3;
     
+    //initialize and choose color scheme
+    //an option where later particles are less opaque
+    //theColor = color(random(150) + 105, random(3) * 50 + 105, random(3) * 50 + 105, 105 + (numRecur * 50));
+    
+    //Another option I prefer where later particles are more red
+    theColor = color(250 - (50 * numRecur), random(3) * 50 + (30 * numRecur), random(3) * 50 + (30 * numRecur));
+    
     //initialize variables randomizing most
-    theColor = color(random(3) * 50 + 105, random(3) * 50 + 105, random(3) * 50 + 105);
     duration = ceil(random(30)) + 40;
     hidden = false;
     splitAngle = 360/numParticles;
